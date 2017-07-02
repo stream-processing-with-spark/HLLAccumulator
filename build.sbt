@@ -1,6 +1,6 @@
 organization := "learning.spark.streaming"
 
-name := "hll-accumulator"
+name := "hllaccumulator"
 
 version := "0.1.0"
 
