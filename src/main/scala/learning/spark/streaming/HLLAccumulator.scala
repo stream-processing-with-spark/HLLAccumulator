@@ -8,10 +8,9 @@ import com.clearspring.analytics.stream.cardinality.HyperLogLogPlus
   * An [[AccumulatorV2 accumulator]] for counting unique elements using a HyperLogLog
   *
   */
-class HLLAccumulator[T](precisionValue: Int = 12) extends AccumulatorV2[T, Long] {
+class HLLAccumulator[T](precisionValue: Int = 12) extends AccumulatorV2[T, Long] with Serializable {
   require(precisionValue>=4 && precisionValue<=32, "precision value must be between 4 and 32")
 
-  private val lock = new Object()
   private def instance(): HyperLogLogPlus = new HyperLogLogPlus(precisionValue, 0)
 
   private var hll: HyperLogLogPlus = instance()
@@ -26,9 +25,7 @@ class HLLAccumulator[T](precisionValue: Int = 12) extends AccumulatorV2[T, Long]
 
   override def copy(): HLLAccumulator[T] = {
     val newAcc = new HLLAccumulator[T](precisionValue)
-    lock.synchronized {
-      newAcc.hll.addAll(hll)
-    }
+    newAcc.hll.addAll(hll)
     newAcc
   }
 
